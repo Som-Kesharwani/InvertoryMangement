@@ -1,0 +1,3 @@
+[
+{"model": "Product.productcategory", "pk": 2, 
+"fields": {"parentCategory": "2", "name": "Electronic", "type": "Generic"}}]

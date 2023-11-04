@@ -13,22 +13,21 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    #parentCategory = serializers.PrimaryKeyRelatedField(allow_blank=True)
+    parentCategory = serializers.CharField(max_length=10)
     class Meta:
         model = ProductCategory
-        fields = ('name','parentCategory')
+        fields = '__all__'
+    #parentCategory = serializers.PrimaryKeyRelatedField(allow_blank=True)
     def create(self, validated_data):
-        category = validated_data.get('parentCategory')
-        print("This is new logs 5161: ",category)
-        if category == None:
-            cat = ProductCategory.objects.get_or_create(name="default")[0]
-            category = cat
+        parentCategory = validated_data.get("parentCategory", None)
+        validated_data.pop("parentCategory")
+        print("Datav 121", parentCategory)
+        if parentCategory == None or parentCategory == "Default":
+            cat = ProductCategory.objects.get_or_create(name = "Default",type="Generic")[0]
+        else:
+            cat = ProductCategory.objects.filter(name=parentCategory)[0]
 
-        post = ProductCategory(
-                name = validated_data['name'],
-                parentCategory = category
-        )
-        post.save()
-        return post
+        #prod = ProductCategory.objects.get_or_create(name, type, obj)
+        return ProductCategory.objects.create(parentCategory=cat, **validated_data)
    
 
