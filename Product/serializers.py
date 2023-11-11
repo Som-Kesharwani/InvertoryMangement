@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import ProductCategory
+from .models import Category, Product, SubCategory
 
 class UserSerializers(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -13,21 +13,30 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    parentCategory = serializers.CharField(max_length=10)
     class Meta:
-        model = ProductCategory
-        fields = '__all__'
-    #parentCategory = serializers.PrimaryKeyRelatedField(allow_blank=True)
-    def create(self, validated_data):
-        parentCategory = validated_data.get("parentCategory", None)
-        validated_data.pop("parentCategory")
-        print("Datav 121", parentCategory)
-        if parentCategory == None or parentCategory == "Default":
-            cat = ProductCategory.objects.get_or_create(name = "Default",type="Generic")[0]
-        else:
-            cat = ProductCategory.objects.filter(name=parentCategory)[0]
+        model = Category
+        fields = ( "name", "type")
 
-        #prod = ProductCategory.objects.get_or_create(name, type, obj)
-        return ProductCategory.objects.create(parentCategory=cat, **validated_data)
+class SubCategorySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ( "name", "type")
+ 
+    
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
+        category = serializers.CharField(max_length=10)
+        subCategory = serializers.CharField(max_length=10)
+        class Meta:
+            model = Product
+            fields = ('name','description','category', 'subCategory')
+        
+        def create(self, validated_data):
+            cat = validated_data.get("category")
+            cat= Category.objects.get(name=cat)
+            sub = validated_data.get("subCategory")
+            sub= Category.objects.get(name=sub)
+            validated_data.pop("subCategory")
+            validated_data.pop("category")
+            return Product.objects.create(category=cat,subCategory=sub, **validated_data)
    
 

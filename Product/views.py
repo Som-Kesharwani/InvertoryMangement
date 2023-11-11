@@ -1,8 +1,8 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import viewsets
 from rest_framework import permissions
-from .serializers import   UserSerializers, GroupSerializer, CategorySerializer
-from .models import ProductCategory
+from .serializers import   UserSerializers, GroupSerializer, CategorySerializer,ProductSerializer, SubCategorySerializer
+from .models import Category, Product, SubCategory
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -25,6 +25,22 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows category to be viewed or edited.
     """
-    queryset = ProductCategory.objects.all()
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class SubCategoryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows category to be viewed or edited.
+    """
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class ProductViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Product to be viewed or edited.
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticated]
