@@ -17,7 +17,7 @@ class Sales(models.Model):
     quantity_sold = models.IntegerField()
     sale_date = models.DateTimeField(auto_now=True)
 
-class Puschase(models.Model):
+class Purchase(models.Model):
     purchase_id = models.BigAutoField(primary_key=True)
     #shop_id =
     product_id = product_id = models.ForeignKey("Product.Product", on_delete=models.DO_NOTHING)

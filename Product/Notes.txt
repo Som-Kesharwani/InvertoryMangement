@@ -7,3 +7,12 @@ DATABASES = {
         },
     }
 }
+
+
+'default': {
+        'ENGINE': 'django.db.backends.postgresql', #'psqlextra.backend',
+        'HOST': 'localhost',
+        'NAME': 'postgres',#'lusiadas',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+    }

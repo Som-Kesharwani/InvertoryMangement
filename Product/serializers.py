@@ -16,27 +16,32 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
         fields = ( "name", "type")
+    def create(self, validated_data):
+        return Category.objects.create(level=1,**validated_data)
 
 class SubCategorySerializer(serializers.HyperlinkedModelSerializer):
+    category = serializers.CharField(max_length=20)
     class Meta:
         model = SubCategory
-        fields = ( "name", "type")
+        fields = ( "name", "type","category")
+    def create(self, validated_data):
+        cat = validated_data.get("category")
+        cat= Category.objects.filter(name=cat)
+        validated_data.pop("category")
+        return SubCategory.objects.create(**validated_data)
  
     
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
-        category = serializers.CharField(max_length=10)
         subCategory = serializers.CharField(max_length=10)
         class Meta:
             model = Product
-            fields = ('name','description','category', 'subCategory')
+            fields = ('name','description', 'subCategory')
         
         def create(self, validated_data):
-            cat = validated_data.get("category")
-            cat= Category.objects.get(name=cat)
             sub = validated_data.get("subCategory")
             sub= Category.objects.get(name=sub)
             validated_data.pop("subCategory")
-            validated_data.pop("category")
-            return Product.objects.create(category=cat,subCategory=sub, **validated_data)
+            level = 1
+            return Product.objects.create(subCategory=sub, **validated_data)
    
 
