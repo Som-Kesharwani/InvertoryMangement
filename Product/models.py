@@ -5,7 +5,7 @@ import uuid
 
 
 def setDefault():
-    return ProductCategory.objects.get_or_create(name='default', type="Generic")
+    return ProductCategory.objects.get_or_create(name='default', type="Generic",parentCategory=None)
 
 def get_sentinel_category():
     return ProductCategory().objects.get_or_create(name="Default",parentCategory="Default")[0]
@@ -16,13 +16,14 @@ class ProductCategory(models.Model):
     def __str__(self) -> str:
         return self.name
     choices =  (('Generic', 'Generic'), ('Specific', 'Specific'))
-    level = models.IntegerField(default=1)
+    level = models.IntegerField(default=1 )
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=15,choices=choices,blank=False,null=False,default='Generic')
-    parentCategory = models.ForeignKey(to = "ProductCategory",on_delete=models.SET_DEFAULT, default=setDefault)
+    parentCategory = models.ForeignKey(to = "ProductCategory",on_delete=models.SET_DEFAULT, default=setDefault, null=True)
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
+    brand = models.CharField(max_length=50, default="Unknown")
     description = models.CharField(max_length=200)
     SKU = models.UUIDField(primary_key=True, default=uuid.uuid4, editable = False)
     created_at = models.DateTimeField(auto_now=True,)
